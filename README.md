@@ -1,12 +1,5 @@
 # Billzy Frontend
 
-## 👥 Team Members
-**MT4 Promotion - 2025/2026**
-
-- **Waris AKINOCHO**
-- **ABDULRAHMAN Abdulrahman**
-- **RASOLONJATOVO Rina**
-
 ## Installation Guide
 
 This guide provides step-by-step instructions for installing and setting up Billzy Frontend.
