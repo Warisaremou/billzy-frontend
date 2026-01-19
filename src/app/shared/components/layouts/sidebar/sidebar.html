@@ -1,0 +1,32 @@
+<div hlmSidebarWrapper>
+  <hlm-sidebar variant="inset">
+    <hlm-sidebar-header>
+      <ul hlmSidebarMenu>
+        <li hlmSidebarMenuItem>
+          <a hlmBtn hlmSidebarMenuButton size="lg" routerLink="/dashboard/overview">
+            @if (isSuperAdmnin()) {
+            <app-logo routerLink="/dashboard/overview" />
+            } @else {
+            <company-logo-preview [logoUrl]="userCompanies()[0].logo_url" />
+            <div class="grid flex-1 text-left text-sm leading-tight">
+              <span class="truncate font-medium">{{ userCompanies()[0].name }}</span>
+              <span class="truncate text-xs">{{ userCompanies()[0].siret }}</span>
+            </div>
+            }
+          </a>
+        </li>
+      </ul>
+    </hlm-sidebar-header>
+
+    <hlm-sidebar-content>
+      <spartan-nav-main [items]="navMenu()" />
+    </hlm-sidebar-content>
+
+    @if (currentUser(); as user) {
+    <hlm-sidebar-footer>
+      <spartan-nav-user [user]="user" />
+    </hlm-sidebar-footer>
+    }
+  </hlm-sidebar>
+  <ng-content />
+</div>

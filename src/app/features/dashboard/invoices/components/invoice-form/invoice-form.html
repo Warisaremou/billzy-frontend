@@ -1,0 +1,278 @@
+<div class="space-y-6 flex flex-col flex-1 h-full">
+  <div class="flex max-md:flex-col md:items-center justify-between gap-3">
+    <div>
+      <h4>{{ isEdit() ? 'Modifier la facture' : 'Créer une nouvelle facture' }}</h4>
+      <p>
+        Remplissez les informations ci-dessous pour {{ isEdit() ? 'modifier la facture' : 'créer une nouvelle facture'
+        }}.
+      </p>
+    </div>
+
+    @if (isEdit()) {
+    <button [disabled]="isPublishing() || isPublished()" (click)="publishInvoice()" hlmBtn>
+      @if (isPublishing()) {
+      <hlm-spinner />
+      } @else{
+      <ng-icon hlm size="sm" name="lucideSend" />
+      } {{ isPublished() ? 'Facture publiée' : 'Publier la facture' }}
+    </button>
+    }
+  </div>
+
+  <div
+    class="p-6 max-h-[calc(100vh-10.5rem)] overflow-y-scroll bg-muted grow flex justify-center [&>div]:border [&>div]:border-input/50"
+  >
+    <form
+      [formGroup]="invoiceForm"
+      (ngSubmit)="handleSubmit()"
+      class="w-full max-w-[800px] min-h-[1050px] flex flex-col items-end space-y-4"
+    >
+      <div class="h-full bg-background border space-y-7 w-full p-12 transition-all flex flex-col">
+        <!-- Invoice info and logo -->
+        <div class="flex justify-between items-center">
+          <div class="flex flex-col gap-0.5">
+            <div class="flex items-center gap-x-2">
+              <h4>Facture N°:</h4>
+              @if (isEdit()) {
+              <h4>{{ invoice()?.reference }}</h4>
+              } @else {
+              <label class="block h-full">
+                <div
+                  class="h-4 w-28 bg-[repeating-linear-gradient(-60deg,#DBDBDB,#DBDBDB_1px,transparent_1px,transparent_5px)] dark:bg-[repeating-linear-gradient(-60deg,#2C2C2C,#2C2C2C_1px,transparent_1px,transparent_5px)]"
+                ></div>
+              </label>
+              }
+            </div>
+            <div class="flex space-x-2 items-center">
+              <label hlmLabel>Date d'émission :</label>
+              <div
+                class="h-4 w-28 bg-[repeating-linear-gradient(-60deg,#DBDBDB,#DBDBDB_1px,transparent_1px,transparent_5px)] dark:bg-[repeating-linear-gradient(-60deg,#2C2C2C,#2C2C2C_1px,transparent_1px,transparent_5px)]"
+              ></div>
+            </div>
+            <div class="flex space-x-2 items-center">
+              <label hlmLabel for="due_date">Date d'échéance :</label>
+              <hlm-date-picker
+                buttonId="due_date"
+                formControlName="due_date"
+                [autoCloseOnSelect]="true"
+                class="border-transparent max-w-32 hover:bg-transparent p-0! size-fit"
+              >
+                <span>{{ invoiceForm.get('due_date')?.value | date: 'dd/MM/yyyy' }}</span>
+              </hlm-date-picker>
+            </div>
+          </div>
+          <div class="relative h-20 group">
+            @if (selectedCompany()?.logo_url) {
+            <div class="size-16 p-1">
+              <img [src]="selectedCompany()?.logo_url" alt="company-logo" />
+            </div>
+            } @else {
+            <label for="comapany-logo" class="block h-full">
+              <div
+                class="size-20 bg-[repeating-linear-gradient(-60deg,#DBDBDB,#DBDBDB_1px,transparent_1px,transparent_5px)] dark:bg-[repeating-linear-gradient(-60deg,#2C2C2C,#2C2C2C_1px,transparent_1px,transparent_5px)]"
+              ></div>
+            </label>
+            }
+          </div>
+        </div>
+
+        <!-- Sender & Recipient Information -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2">
+              <label hlmLabel for="company_id">De</label>
+              @if (companiesQuery.isSuccess()) {
+              <select-input
+                [dataList]="companiesQuery.data()!"
+                labelKey="name"
+                valueKey="id"
+                placeholder="Sélectionner une entreprise"
+                searchPlaceholder="Rechercher une entreprise"
+                (valueChanged)="onCompanySelect($event)"
+                class="border-transparent shadow-none p-0! size-fit hover:bg-transparent font-normal text-accent-foreground text-xs"
+              />
+              }
+            </div>
+            <textarea
+              id="company-details"
+              hlmTextarea
+              variant="unstyled"
+              readonly
+              rows="5"
+              class="grow p-0 focus-visible:border-muted text-xs min-h-[130px]"
+              [value]="companyDetails()"
+            ></textarea>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2">
+              <label hlmLabel for="client_id">À</label>
+              @if (customersQuery.isSuccess()) {
+              <select-input
+                [dataList]="customersQuery.data()!"
+                labelKey="name"
+                valueKey="id"
+                placeholder="Sélectionner un client"
+                searchPlaceholder="Rechercher un client"
+                (valueChanged)="onClientSelect($event)"
+                class="border-transparent shadow-none p-0! size-fit hover:bg-transparent font-normal text-accent-foreground text-xs"
+              />
+              }
+            </div>
+            <textarea
+              id="client-details"
+              hlmTextarea
+              variant="unstyled"
+              readonly
+              rows="5"
+              class="grow p-0 focus-visible:border-muted text-xs min-h-[130px]"
+              [value]="clientDetails()"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Items List -->
+        <div class="space-y-0.5">
+          <div
+            class="bg-muted grid grid-cols-[1.5fr_15%_15%_15%_15%_5%] gap-2 items-end [&>span]:p-2 [&>span]:text-xs [&>span]:lg:text-sm [&>span]:text-accent-foreground [&>span]:min-w-10 [&>span]:truncate [&>span]:outline-none"
+          >
+            <span>Libellé</span>
+            <span>Quantité</span>
+            <span>Prix unitaire</span>
+            <span>TVA</span>
+            <span>Total HT</span>
+            <span class="text-right truncate w-5"></span>
+          </div>
+          <!-- List here -->
+          <div formArrayName="items" class="space-y-2">
+            @for (itemForm of items.controls; track $index; let i = $index) {
+            <form
+              [formGroup]="$any(itemForm)"
+              class="grid grid-cols-[1.5fr_15%_15%_15%_15%_5%] gap-2 items-start border-b border-input/70 py-2"
+            >
+              <div class="w-full">
+                <input [id]="'label-' + i" hlmInput variant="unstyled" formControlName="label" />
+              </div>
+              <div class="w-full">
+                <input
+                  [id]="'quantity-' + i"
+                  hlmInput
+                  variant="unstyled"
+                  type="number"
+                  min="1"
+                  variant="unstyled"
+                  formControlName="quantity"
+                />
+              </div>
+              <div class="w-full">
+                <input
+                  [id]="'unit_price-' + i"
+                  hlmInput
+                  type="number"
+                  variant="unstyled"
+                  formControlName="unit_price"
+                />
+              </div>
+              <div class="w-full">
+                <input [id]="'vat_rate-' + i" type="number" hlmInput variant="unstyled" formControlName="vat_rate" />
+              </div>
+              <div class="size-full flex items-center">
+                <span>{{ itemForm.get('unit_total_ht')?.value | amount }}</span>
+              </div>
+              <button
+                type="button"
+                [disabled]="isPublished()"
+                (click)="removeItemFromInvoice(itemForm.get('id')?.value, i)"
+                hlmBtn
+                variant="ghost"
+                size="icon-sm"
+              >
+                <ng-icon hlm size="sm" name="lucideX" />
+              </button>
+            </form>
+            }
+
+            <!-- Add more item button -->
+            <button
+              type="button"
+              (click)="addItem()"
+              hlmBtn
+              variant="outline"
+              size="sm"
+              class="text-xs"
+              variant="ghost"
+            >
+              <ng-icon hlm size="xs" name="lucidePlus" />
+              Ajouter un produit
+            </button>
+          </div>
+        </div>
+
+        <!-- Payment & Invoice Total -->
+        <div class="grid grid-cols-2 gap-8">
+          <div>
+            <div class="bg-muted w-fit p-2 flex items-center space-x-2">
+              <ng-icon hlm size="sm" name="lucideWallet" />
+              <span>Echéance de paiement</span>
+            </div>
+            <p class="mt-3">A réception.</p>
+          </div>
+          <div class="space-y-3 [&>div]:flex [&>div]:justify-between">
+            <div>
+              <span>Total HT</span>
+              <span>{{ totalHt() | amount }}</span>
+            </div>
+            <div>
+              <span>TVA</span>
+              <span>{{ tva() | amount }}</span>
+            </div>
+            <hlm-separator />
+            <div>
+              <span>Total TTC</span>
+              <span class="text-xl font-semibold">{{ totalTTC() | amount }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms & Conditions -->
+        <div class="flex flex-col gap-1">
+          <span class="font-medium">Termes et conditions</span>
+          @if (termsConditionsQuery.isSuccess()) { @if (termsConditionsQuery.data()?.length) { @for (term of
+          termsConditionsQuery.data(); track term.id) {
+          <p class="text-xs">{{ term.content }}</p>
+          } } @else {
+          <p class="text-xs text-muted-foreground">Aucune condition générale de vente trouvée pour cette entreprise.</p>
+          } }
+        </div>
+
+        <hlm-separator />
+        <!-- Payment Instructions -->
+        <div class="flex flex-col gap-1.5">
+          <span class="uppercase font-semibold">Instructions de paiement</span>
+          @if (paymentDetailsQuery.isSuccess()) { @if (paymentDetailsQuery.data()?.length) { @for (detail of
+          paymentDetailsQuery.data(); track detail.id) {
+          <div class="flex flex-col space-y-0.5 text-xs">
+            <span class="font-medium">{{ detail.owner_name }}</span>
+            <span>IBAN: {{ detail.iban }}</span>
+            <span>BIC: {{ detail.bic }}</span>
+            <span>Banque: {{ detail.bank_name }}</span>
+          </div>
+          }
+          <div class="flex flex-col space-y-0.5 mt-2">
+            <span class="font-semibold text-xs">
+              Veuillez utiliser le numéro de facture comme référence de paiement.
+            </span>
+          </div>
+          } @else {
+          <p class="text-xs text-muted-foreground">Aucun détail de paiement trouvé pour cette entreprise.</p>
+          } }
+        </div>
+      </div>
+
+      <button type="submit" hlmBtn [disabled]="invoiceForm.invalid || isPending() || isPublished()">
+        @if (isPending()) {
+        <hlm-spinner />
+        } {{ isEdit() ? 'Modifier la facture' : 'Ajouter la facture' }}
+      </button>
+    </form>
+  </div>
+</div>

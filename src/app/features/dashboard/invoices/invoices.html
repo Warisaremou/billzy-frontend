@@ -1,0 +1,35 @@
+<div class="space-y-4">
+  <div class="flex items-center justify-between gap-3">
+    <h4>Liste des factures</h4>
+    <a hlmBtn routerLink="{{ routes.dashboard.invoices.create }}">
+      <ng-icon hlm size="sm" name="lucidePlusCircle" />
+      Créer une facture
+    </a>
+  </div>
+
+  @if (query.isLoading()) {
+  <div class="flex p-5 flex-col items-center justify-center gap-2">
+    <hlm-spinner class="text-xl" />
+    <p class="text-muted-foreground">Chargement des factures...</p>
+  </div>
+  } @else if (query.isError()) {
+  <div class="rounded-lg border border-destructive bg-destructive/10 p-4">
+    <p class="text-sm text-destructive">{{ query.error().message }}</p>
+  </div>
+  } @else if (query.isSuccess()) {
+  <data-table
+    [columns]="columns"
+    [data]="query.data()!"
+    searchColumn="reference"
+    searchPlaceholder="Rechercher par référence..."
+  >
+    <div class="flex flex-col gap-2 items-center justify-center">
+      Aucune facture trouvée
+      <a hlmBtn routerLink="{{ routes.dashboard.invoices.create }}">
+        <ng-icon hlm size="sm" name="lucidePlusCircle" />
+        Ajouter une facture
+      </a>
+    </div>
+  </data-table>
+  }
+</div>

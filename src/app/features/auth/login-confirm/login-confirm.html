@@ -1,0 +1,38 @@
+<shared-form-card
+  title="Confirmez votre addresse e-mail"
+  description="Saisissez le code à 6 chiffres envoyé à votre adresse e-mail pour continuer"
+>
+  <div class="flex flex-col gap-y-5">
+    <form [formGroup]="loginConfirmForm" (ngSubmit)="handleSubmit()" class="space-y-7">
+      <div class="flex flex-col gap-6">
+        <div class="grid gap-2">
+          <label hlmLabel for="otp">Code de confirmation</label>
+          <input type="text" id="otp" placeholder="XXX XXX" formControlName="otp" hlmInput />
+          @if (loginConfirmForm.get('otp')?.touched && loginConfirmForm.get('otp')?.errors) {
+          <app-input-error>
+            @if (loginConfirmForm.get('otp')?.errors?.['required']) { Code de confirmation requis } @if
+            (loginConfirmForm.get('otp')?.errors?.['pattern']) { Le code de confirmation doit contenir 6 chiffres }
+          </app-input-error>
+          }
+        </div>
+
+        <div class="flex items-start gap-3">
+          <ng-icon hlm hlmAlertIcon size="18px" name="lucideCircleAlert" class="mt-0.5" />
+          <div class="space-y-1">
+            <p>Vérifiez vos spams si vous n'avez pas reçu le code.</p>
+            <button hlmBtn variant="link" class="p-0 h-fit underline" type="button">Recevoir un nouveau code</button>
+          </div>
+        </div>
+      </div>
+      <button hlmBtn class="w-full" type="submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+        <hlm-spinner />
+        } Confirmer mon adresse e-mail
+      </button>
+    </form>
+    <a hlmBtn routerLink="/auth/login" variant="link" class="underline">
+      <ng-icon hlm size="sm" name="lucideMoveLeft" />
+      Retour
+    </a>
+  </div>
+</shared-form-card>

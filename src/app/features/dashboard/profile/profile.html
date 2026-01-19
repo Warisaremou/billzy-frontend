@@ -1,0 +1,69 @@
+<div class="space-y-4">
+  <div class="">
+    <h4>Mon Profile</h4>
+  </div>
+
+  <form [formGroup]="profileForm" (ngSubmit)="handleSubmit()" class="space-y-5 max-w-md">
+    <div class="flex flex-col gap-2">
+      <div class="grid gap-2">
+        <label hlmLabel for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="utilisateur@example.com"
+          hlmInput
+          formControlName="email"
+          readonly
+        />
+        @if (profileForm.get('email')?.touched && profileForm.get('email')?.errors) {
+        <app-input-error>
+          @if (profileForm.get('email')?.errors?.['required']) { Adresse email requis } @if
+          (profileForm.get('email')?.errors?.['email']) { Adresse email invalide }
+        </app-input-error>
+        }
+      </div>
+
+      <div class="grid gap-2">
+        <label hlmLabel for="first_name">Nom</label>
+        <input
+          type="text"
+          id="first_name"
+          placeholder="John"
+          hlmInput
+          formControlName="first_name"
+          [readonly]="!isEditMode()"
+        />
+        @if (profileForm.get('first_name')?.touched && profileForm.get('first_name')?.errors) {
+        <app-input-error>
+          @if (profileForm.get('first_name')?.errors?.['required']) { Nom requis } @if
+          (profileForm.get('first_name')?.errors?.['minlength']) { Nom invalide }
+        </app-input-error>
+        }
+      </div>
+
+      <div class="grid gap-2">
+        <label hlmLabel for="last_name">Prenom</label>
+        <input
+          type="text"
+          id="last_name"
+          placeholder="Doe"
+          hlmInput
+          formControlName="last_name"
+          [readonly]="!isEditMode()"
+        />
+        @if (profileForm.get('last_name')?.touched && profileForm.get('last_name')?.errors) {
+        <app-input-error>
+          @if (profileForm.get('last_name')?.errors?.['required']) { Prenom requis } @if
+          (profileForm.get('last_name')?.errors?.['minlength']) { Prenom invalide }
+        </app-input-error>
+        }
+      </div>
+    </div>
+
+    <button hlmBtn class="w-fit" type="submit" [disabled]="this.updateProfileMutation.isPending()" size="sm">
+      @if (this.updateProfileMutation.isPending()) {
+      <hlm-spinner />
+      } @if (this.isEditMode()) { Enregistrer} @else { Modifier }
+    </button>
+  </form>
+</div>

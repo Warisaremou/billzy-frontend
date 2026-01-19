@@ -1,0 +1,47 @@
+<main class="space-y-14">
+  <header class="sticky py-5 bg-background backdrop:blur-md border-b border-accent">
+    <nav class="container flex items-center justify-between max-w-7xl">
+      <app-logo />
+      <a hlmBtn routerLink="{{ routes.dashboard.overview }}">
+        Générer une facture
+        <ng-icon hlm size="sm" name="lucideMoveRight" />
+      </a>
+    </nav>
+  </header>
+
+  <div class="container max-w-7xl mt-14">
+    <div class="mx-auto flex flex-col items-center justify-center gap-8">
+      <div class="space-y-2 text-center max-w-5xl">
+        <h1>Votre plateforme de facturation B2B. Simple. Conforme. Automatique.</h1>
+        <p class="max-md:text-sm">
+          Créez, envoyez et archivez vos factures pour vos clients et l'administration. Prêt pour la transmission
+          électronique.
+        </p>
+      </div>
+      <div class="flex gap-4">
+        <button hlmBtn variant="outline">Voir une démo</button>
+        <a hlmBtn routerLink="{{ routes.dashboard.overview }}">
+          Découvrir Billzy
+          <ng-icon hlm size="sm" name="lucideMoveRight" />
+        </a>
+      </div>
+    </div>
+
+    <div class="p-1 md:p-2 mt-10 rounded-3xl w-full mx-auto bg-background border border-accent shadow">
+      <div class="bg-muted w-full rounded-3xl aspect-12/6 overflow-hidden border border-accent">
+        <img src="assets/app-preview.png" alt="App Preview" fill />
+      </div>
+    </div>
+  </div>
+  <footer class="border-accent border-t py-8 overflow-hidden">
+    <div class="container max-w-7xl mx-auto flex justify-between items-center gap-4">
+      <app-logo />
+      <p class="text-center text-sm text-muted-foreground">© 2026 Billzy. Tous droits réservés.</p>
+    </div>
+    <h5
+      class="text-muted/60 text-[48vh] [-webkit-text-stroke:1px_#ebebeb] leading-none text-center pointer-events-none"
+    >
+      Billzy
+    </h5>
+  </footer>
+</main>

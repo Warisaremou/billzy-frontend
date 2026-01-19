@@ -1,0 +1,58 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime directories
+build/
+
+.raw-data/*
+docs/
+test/
+tools/
+docker-compose.dev.yml
+
+# Font files
+src/services/PDF/fonts/
+
+# Dependency directories
+node_modules/
+package-lock.json
+package.json
+
+# Environment variable files
+.env
+.env.*
+
+# Editor directories and files
+.vscode/*
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# prettier
+.prettierignore
+.prettierrc.json
+
+# git hooks
+.husky
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# Readme
+README.md
+
+# Docker services & files
+docker-compose.*

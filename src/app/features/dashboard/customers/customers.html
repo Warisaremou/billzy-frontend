@@ -1,0 +1,38 @@
+<div class="space-y-4">
+  <customers-sheet />
+  <div class="flex items-center justify-between gap-3">
+    <h4>Liste des clients</h4>
+    <div>
+      <button id="create-company" (click)="openCreateSheet()" hlmBtn>
+        <ng-icon hlm size="sm" name="lucidePlusCircle" />
+        Ajouter un client
+      </button>
+    </div>
+  </div>
+
+  @if (query.isPending()) {
+  <div class="flex p-5 flex-col items-center justify-center gap-2">
+    <hlm-spinner class="text-xl" />
+    <p class="text-muted-foreground">Chargement des clients...</p>
+  </div>
+  } @else if (query.isError()) {
+  <div class="rounded-lg border border-destructive bg-destructive/10 p-4">
+    <p class="text-sm text-destructive">{{ query.error().message }}</p>
+  </div>
+  } @else if (query.isSuccess()) {
+  <data-table
+    [columns]="columns"
+    [data]="query.data()!"
+    searchColumn="name"
+    searchPlaceholder="Rechercher par nom de client..."
+  >
+    <div class="flex flex-col gap-2 items-center justify-center">
+      Aucun client trouvée
+      <button id="create-company" (click)="openCreateSheet()" hlmBtn>
+        <ng-icon hlm size="sm" name="lucidePlusCircle" />
+        Ajouter un client
+      </button>
+    </div>
+  </data-table>
+  }
+</div>

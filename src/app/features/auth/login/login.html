@@ -1,0 +1,41 @@
+<shared-form-card
+  title="Connexion"
+  description="Veuillez renseigner vos identifiants pour vous connecter à votre compte."
+>
+  <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()" class="space-y-7">
+    <div class="flex flex-col gap-4">
+      <div class="grid gap-2">
+        <label hlmLabel for="email">Email</label>
+        <input type="email" id="email" placeholder="utilisateur@example.com" hlmInput formControlName="email" />
+        @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors) {
+        <app-input-error>
+          @if (loginForm.get('email')?.errors?.['required']) { Adresse email requis } @if
+          (loginForm.get('email')?.errors?.['email']) { Adresse email invalide }
+        </app-input-error>
+        }
+      </div>
+
+      <div class="grid gap-2">
+        <div class="flex items-center">
+          <label hlmLabel for="password">Mot de passe</label>
+          <a routerLink="/auth/forgot-password" class="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+            Mot de passe oublié ?
+          </a>
+        </div>
+        <input type="password" id="password" placeholder="********" hlmInput formControlName="password" />
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors) {
+        <app-input-error>
+          @if (loginForm.get('password')?.errors?.['required']) { Mot de passe requis } @if
+          (loginForm.get('password')?.errors?.['minlength']) { Le mot de passe doit contenir au moins {{
+          loginForm.get('password')?.errors?.['minlength']?.requiredLength }} caractères }
+        </app-input-error>
+        }
+      </div>
+    </div>
+    <button hlmBtn class="w-full" type="submit" [disabled]="isLoading()">
+      @if (isLoading()) {
+      <hlm-spinner />
+      } Se connecter
+    </button>
+  </form>
+</shared-form-card>

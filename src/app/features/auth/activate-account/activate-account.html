@@ -1,0 +1,23 @@
+<shared-form-card title="Activez votre compte" description="Renseignez un  mot de passe pour activer votre compte.">
+  <div class="flex flex-col gap-y-5">
+    <form class="space-y-7" (ngSubmit)="handleSubmit()" [formGroup]="activateAccountForm">
+      <div class="flex flex-col gap-4">
+        <div class="grid gap-2">
+          <label hlmLabel for="password">Mot de passe</label>
+          <input type="password" id="password" hlmInput placeholder="********" formControlName="password" />
+          @if (activateAccountForm.get('password')?.touched && activateAccountForm.get('password')?.errors) {
+          <app-input-error>
+            @if (activateAccountForm.get('password')?.errors?.['required']) { Mot de passe requis } @if
+            (activateAccountForm.get('password')?.errors?.['minLength']) { Mot de passe invalide }
+          </app-input-error>
+          }
+        </div>
+      </div>
+      <button hlmBtn class="w-full" type="submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+        <hlm-spinner />
+        } Activer mon compte
+      </button>
+    </form>
+  </div>
+</shared-form-card>
