@@ -9,8 +9,8 @@ This guide provides step-by-step instructions for installing and setting up Bill
 ### 1. Clone the Repository
 
 ```bash
-git clone https://gitlab.mt.glassworks.tech/waris/groupe_12_myinvoice_frontend.git my_invoice_frontend
-cd my_invoice_frontend
+git clone https://github.com/Warisaremou/billzy-frontend.git billzy_frontend
+cd billzy_frontend
 ```
 
 ### 2. Install Dependencies
